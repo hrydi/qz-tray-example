@@ -1,0 +1,43 @@
+version: '3.2'
+
+services:
+  web_qz:
+    restart: always
+    build:
+      context: .
+      dockerfile: www.dockerfile
+    container_name: qzweb
+    ports:
+      - 9137:80
+    networks:
+      - traefik-public
+      - default
+    links:
+      - app_qz
+    depends_on:
+      - app_qz
+    volumes:
+      - ${PWD}/apache.conf:/usr/local/apache2/conf/extra/apache.conf
+      - ${PWD}/www:/var/www/html
+    labels:
+      - traefik.frontend.rule=Host:qz.web.local
+      - traefik.enable=true
+      - traefik.port=80
+      - traefik.tags=traefik-public
+      - traefik.docker.network=traefik-public
+      - traefik.frontend.headers.contentSecurityPolicy=upgrade-insecure-requests
+      - traefik.frontend.redirect.entryPoint=https
+
+  app_qz:
+    restart: always
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    container_name: qzapp
+    volumes:
+      - ${PWD}/certs:/var/www/certs
+      - ${PWD}/www:/var/www/html
+    
+networks:
+  traefik-public:
+    external: true
