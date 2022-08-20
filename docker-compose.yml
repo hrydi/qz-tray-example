@@ -5,7 +5,7 @@ services:
     restart: always
     build:
       context: .
-      dockerfile: www.dockerfile
+      dockerfile: http.dockerfile
     container_name: qzweb
     ports:
       - 9137:80
