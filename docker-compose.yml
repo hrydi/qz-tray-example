@@ -34,8 +34,10 @@ services:
       context: .
       dockerfile: php.dockerfile
     container_name: qzapp
+    environment:
+      - SSL_PASS_KEY=${SSL_PASS_KEY}
     volumes:
-      - ${PWD}/certs:/var/www/certs
+      - ${PWD}/certs:/var/www/certs:ro
       - ${PWD}/www:/var/www/html
     
 networks:
